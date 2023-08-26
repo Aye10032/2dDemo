@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 219345210}
   - component: {fileID: 219345212}
   - component: {fileID: 219345211}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: floor_layered_0000_04 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   m_Component:
   - component: {fileID: 322501897}
   - component: {fileID: 322501899}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: floor_layered_0000_04 (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -438,7 +438,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1134701368}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -636,6 +636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  jumpSpeed: 1
 --- !u!95 &1800595173
 Animator:
   serializedVersion: 5
@@ -667,7 +668,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1808716784}
   - component: {fileID: 1808716786}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: floor_layered_0000_04 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

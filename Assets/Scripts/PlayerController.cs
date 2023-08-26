@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 10f;
+    public float jumpSpeed = 1f;
 
     private int _moveStatus;
 
@@ -15,9 +17,15 @@ public class PlayerController : MonoBehaviour
 
     //刚体组件
     private Rigidbody2D _rigidbody2D;
+
     //动画组件
     private Animator _animator;
-    private static readonly int Movement1 = Animator.StringToHash("movement");
+    private static readonly int MovementTag = Animator.StringToHash("movement");
+    private static readonly int OnGroundTag = Animator.StringToHash("isOnGround");
+    private static readonly int JumpTag = Animator.StringToHash("jump");
+
+    //是否在地面
+    private bool _isOnGround;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +39,22 @@ public class PlayerController : MonoBehaviour
     {
         Movement();
         Direction();
+        Jump();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        IsOnGround(collision, false);
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        IsOnGround(collision, false);
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        IsOnGround(collision, true);
     }
 
     private void Movement()
@@ -55,8 +79,8 @@ public class PlayerController : MonoBehaviour
         {
             _moveStatus = 0;
         }
-        
-        _animator.SetInteger(Movement1, _moveStatus);
+
+        _animator.SetInteger(MovementTag, _moveStatus);
     }
 
     //改变人物朝向
@@ -71,5 +95,55 @@ public class PlayerController : MonoBehaviour
         {
             transform.localScale = Vector3.one;
         }
+    }
+
+    //处理人物跳跃
+    private void Jump()
+    {
+        if (Input.GetKey(KeyCode.Z))
+        {
+            //给予持续的向上的力
+            _rigidbody2D.AddForce(new Vector2(0, jumpSpeed), ForceMode2D.Force);
+
+            //触发跳跃动画
+            _animator.SetTrigger(JumpTag);
+        }
+    }
+
+    private void IsOnGround(Collision2D collision, bool exit)
+    {
+        //离开时
+        if (exit)
+        {
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Terrain"))
+            {
+                Debug.Log("leave");
+                _isOnGround = false;
+            }
+        }
+        else
+        {
+            Debug.Log("enter");
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Terrain") && !_isOnGround)
+            {
+                if (collision.contacts[0].normal == Vector2.up) //从上方进入碰撞体
+                {
+                    _isOnGround = true;
+                    CancelJump();
+                }
+                else if (collision.contacts[0].normal == Vector2.down)
+                {
+                    CancelJump();
+                }
+            }
+        }
+        
+        _animator.SetBool(OnGroundTag, _isOnGround);
+    }
+
+    //取消跳跃状态
+    private void CancelJump()
+    {
+        _animator.ResetTrigger(JumpTag);
     }
 }
